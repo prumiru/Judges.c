@@ -1,96 +1,99 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#define MAX_JUDGES 5
-#define MAX_NAME_LENGTH 50
-#define MAX_GENDER_LENGTH 10
-#define MAX_AFFILIATION_LENGTH 100
-#define MAX_TITLE_LENGTH 100
-#define MAX_EXPERTISE_LENGTH 100
-#define MAX_EMAIL_LENGTH 100
-#define MAX_PHONE_LENGTH 15
-
-typedef struct {
-    char name[MAX_NAME_LENGTH];
-    char gender[MAX_GENDER_LENGTH];
-    char affiliation[MAX_AFFILIATION_LENGTH];
-    char title[MAX_TITLE_LENGTH];
-    char expertise[MAX_EXPERTISE_LENGTH];
-    char email[MAX_EMAIL_LENGTH];
-    char phone[MAX_PHONE_LENGTH];
-} Judge;
-
-void inputJudgeInfo(Judge* judge) {
-    printf("이름: ");
-    fgets(judge->name, MAX_NAME_LENGTH, stdin);
-    judge->name[strcspn(judge->name, "\n")] = '\0'; // 개행 문자 제거
-
-    printf("성별: ");
-    fgets(judge->gender, MAX_GENDER_LENGTH, stdin);
-    judge->gender[strcspn(judge->gender, "\n")] = '\0';
-
-    printf("소속: ");
-    fgets(judge->affiliation, MAX_AFFILIATION_LENGTH, stdin);
-    judge->affiliation[strcspn(judge->affiliation, "\n")] = '\0';
-
-    printf("직함: ");
-    fgets(judge->title, MAX_TITLE_LENGTH, stdin);
-    judge->title[strcspn(judge->title, "\n")] = '\0';
-
-    printf("전문 분야: ");
-    fgets(judge->expertise, MAX_EXPERTISE_LENGTH, stdin);
-    judge->expertise[strcspn(judge->expertise, "\n")] = '\0';
-
-    printf("메일: ");
-    fgets(judge->email, MAX_EMAIL_LENGTH, stdin);
-    judge->email[strcspn(judge->email, "\n")] = '\0';
-
-    printf("전화: ");
-    fgets(judge->phone, MAX_PHONE_LENGTH, stdin);
-    judge->phone[strcspn(judge->phone, "\n")] = '\0';
-}
-
-void printJudgeInfo(Judge judge) {
-    printf("이름: %s\n", judge.name);
-    printf("성별: %s\n", judge.gender);
-    printf("소속: %s\n", judge.affiliation);
-    printf("직함: %s\n", judge.title);
-    printf("전문 분야: %s\n", judge.expertise);
-    printf("메일: %s\n", judge.email);
-    printf("전화: %s\n", judge.phone);
-}
 
 int main() {
-    Judge judges_array[MAX_JUDGES];
-    int judge_count = 0;
+    int MAX_JUDGES, SELECTED_JUDGES;
     char project_name[100];
-
+    
     // 프로젝트 이름 입력
     printf("참여 프로젝트: ");
     fgets(project_name, sizeof(project_name), stdin);
-    project_name[strcspn(project_name, "\n")] = '\0'; // 개행 문자 제거
+    // 개행 문자 제거
+    for(int i = 0; project_name[i]; i++) {
+        if (project_name[i] == '\n') {
+            project_name[i] = '\0';
+        }
+    }
+    
+    // 심사 풀 인원과 선발 멤버 수 입력
+    printf("심사 풀 인원 수를 입력하세요: ");
+    scanf_s("%d", &MAX_JUDGES);
+    printf("선발 멤버 수를 입력하세요: ");
+    scanf_s("%d", &SELECTED_JUDGES);
+    getchar(); // 버퍼 비우기
 
-    printf("심사 풀 인원: %d\n", MAX_JUDGES);
-    printf("선발 멤버 수: 4\n");
+    // 심사자 정보 입력
+    struct Judge {
+        char name[50];
+        char gender[10];
+        char affiliation[100];
+        char title[100];
+        char expertise[100];
+        char email[100];
+        char phone[15];
+    };
+
+    struct Judge judges_array[MAX_JUDGES];
+    int judge_count = 0;
+
     printf("++++++++++++++++++++++++++++++++++++\n");
-    printf("5명의 심사자 정보 입력을 시작합니다.\n");
+    printf("%s 프로젝트의 심사자 정보 입력을 시작합니다.\n", project_name);
     printf("++++++++++++++++++++++++++++++++++++\n");
 
     while (judge_count < MAX_JUDGES) {
-        printf("*심사자 %d: ", judge_count + 1);
-        inputJudgeInfo(&judges_array[judge_count]);
+        printf("* 심사자 %d: ", judge_count + 1);
 
-        // 입력이 누락된 경우 체크
-        if (strlen(judges_array[judge_count].name) == 0 ||
-            strlen(judges_array[judge_count].gender) == 0 ||
-            strlen(judges_array[judge_count].affiliation) == 0 ||
-            strlen(judges_array[judge_count].title) == 0 ||
-            strlen(judges_array[judge_count].expertise) == 0 ||
-            strlen(judges_array[judge_count].email) == 0 ||
-            strlen(judges_array[judge_count].phone) == 0) {
-            printf("입력 항목이 정확하지 않습니다. 다시 입력해주세요.\n");
-            continue; // 누락된 경우 다시 입력
+        // 심사자 정보 입력 (JSON 형태로)
+        printf("이름: ");
+        fgets(judges_array[judge_count].name, sizeof(judges_array[judge_count].name), stdin);
+        printf("성별: ");
+        fgets(judges_array[judge_count].gender, sizeof(judges_array[judge_count].gender), stdin);
+        printf("소속: ");
+        fgets(judges_array[judge_count].affiliation, sizeof(judges_array[judge_count].affiliation), stdin);
+        printf("직함: ");
+        fgets(judges_array[judge_count].title, sizeof(judges_array[judge_count].title), stdin);
+        printf("전문 분야: ");
+        fgets(judges_array[judge_count].expertise, sizeof(judges_array[judge_count].expertise), stdin);
+        printf("메일: ");
+        fgets(judges_array[judge_count].email, sizeof(judges_array[judge_count].email), stdin);
+        printf("전화: ");
+        fgets(judges_array[judge_count].phone, sizeof(judges_array[judge_count].phone), stdin);
+
+        // 개행 문자 제거
+        for(int i = 0; judges_array[judge_count].name[i]; i++) {
+            if (judges_array[judge_count].name[i] == '\n') {
+                judges_array[judge_count].name[i] = '\0';
+            }
+        }
+        for(int i = 0; judges_array[judge_count].gender[i]; i++) {
+            if (judges_array[judge_count].gender[i] == '\n') {
+                judges_array[judge_count].gender[i] = '\0';
+            }
+        }
+        for(int i = 0; judges_array[judge_count].affiliation[i]; i++) {
+            if (judges_array[judge_count].affiliation[i] == '\n') {
+                judges_array[judge_count].affiliation[i] = '\0';
+            }
+        }
+        for(int i = 0; judges_array[judge_count].title[i]; i++) {
+            if (judges_array[judge_count].title[i] == '\n') {
+                judges_array[judge_count].title[i] = '\0';
+            }
+        }
+        for(int i = 0; judges_array[judge_count].expertise[i]; i++) {
+            if (judges_array[judge_count].expertise[i] == '\n') {
+                judges_array[judge_count].expertise[i] = '\0';
+            }
+        }
+        for(int i = 0; judges_array[judge_count].email[i]; i++) {
+            if (judges_array[judge_count].email[i] == '\n') {
+                judges_array[judge_count].email[i] = '\0';
+            }
+        }
+        for(int i = 0; judges_array[judge_count].phone[i]; i++) {
+            if (judges_array[judge_count].phone[i] == '\n') {
+                judges_array[judge_count].phone[i] = '\0';
+            }
         }
 
         judge_count++;
@@ -102,18 +105,24 @@ int main() {
 
     // 심사자 풀 확인 여부
     char confirm;
-    printf("“심사자 풀을 확인할까요?” 메시지를 출력하고 Y 또는 N 입력: ");
+    printf("[%s] 심사자 풀을 확인할까요? (Y/N): ", project_name);
     scanf_s(" %c", &confirm);
     getchar(); // 버퍼 비우기
 
-    if (confirm == 'Y') {
+    if (confirm == 'Y' || confirm == 'y') {
         printf("####################################\n");
         printf("#       심사자 풀 데이터 출력       #\n");
         printf("####################################\n");
 
         for (int i = 0; i < MAX_JUDGES; i++) {
             printf("[심사자 %d]\n", i + 1);
-            printJudgeInfo(judges_array[i]);
+            printf("이름: %s\n", judges_array[i].name);
+            printf("성별: %s\n", judges_array[i].gender);
+            printf("소속: %s\n", judges_array[i].affiliation);
+            printf("직함: %s\n", judges_array[i].title);
+            printf("전문 분야: %s\n", judges_array[i].expertise);
+            printf("메일: %s\n", judges_array[i].email);
+            printf("전화: %s\n", judges_array[i].phone);
             printf("-----------------------------------\n");
         }
     }
